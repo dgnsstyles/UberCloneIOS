@@ -31,6 +31,7 @@ class LoginController: UIViewController {
     private lazy var emailContainerView: UIView = {
         let view = UIView().inputContainerView(image: #imageLiteral(resourceName: "ic_mail_outline_white_2x"), textField: emailTextField)
         view.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        emailTextField.autocapitalizationType = .none
         return view
     }()
     
@@ -79,11 +80,12 @@ class LoginController: UIViewController {
     @objc func handleLogin() {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
-        Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
             if let error = error {
                 print("DEBUG: Failed to log user in with error \(error.localizedDescription)")
                 return
             }
+            self.dismiss(animated: true, completion: nil)
         }
         
     }
