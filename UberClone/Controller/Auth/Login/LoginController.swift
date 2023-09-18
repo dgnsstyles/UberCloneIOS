@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
 
 struct ConstanstsLoginController {
     static let UberLoginBackgroundColor = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1)
@@ -51,6 +53,7 @@ class LoginController: UIViewController {
         let button = AuthButton(type: .system)
         button.setTitle("Log In", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         return button
     }()
     let dontHaveAccountButton: UIButton = {
@@ -58,6 +61,7 @@ class LoginController: UIViewController {
         let attributedTitle = NSMutableAttributedString(string: "Don't have an account?  ", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         
         attributedTitle.append(NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.mainBlueTint]))
+        button.addTarget(self, action: #selector(handleShowSignUp), for: .touchUpInside)
         button.setAttributedTitle(attributedTitle, for: .normal)
         return button
     }()
@@ -68,8 +72,25 @@ class LoginController: UIViewController {
        configureUI()
     }
     
+    @objc func handleShowSignUp() {
+        let controller = SignUpController()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    @objc func handleLogin() {
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+            if let error = error {
+                print("DEBUG: Failed to log user in with error \(error.localizedDescription)")
+                return
+            }
+        }
+        
+    }
+    
     func configureUI() {
         view.backgroundColor = .backgroundColor
+        configureNavigationBar()
         
         view.addSubview(titleLabel)
         titleLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor)
@@ -89,4 +110,9 @@ class LoginController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    func configureNavigationBar() {
+        navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.barStyle = .black
+    }
+    
 }
