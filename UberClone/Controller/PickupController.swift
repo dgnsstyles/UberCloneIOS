@@ -8,7 +8,7 @@
 import UIKit
 import MapKit
 
-protocol PickupControllerDelegate: class {
+protocol PickupControllerDelegate: AnyObject {
     func didAcceptTrip(_ trip: Trip)
 }
 

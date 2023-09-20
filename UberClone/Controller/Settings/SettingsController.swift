@@ -9,7 +9,7 @@ import UIKit
 
 private let reuseIdentifier = "LocationCell"
 
-protocol SettingsControllerDelegate: class {
+protocol SettingsControllerDelegate: AnyObject {
     func updateUser(_ controller: SettingsController)
 }
 
